@@ -1,0 +1,204 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema sp
+-- -----------------------------------------------------
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Review`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Review` (
+  `review id` INT NOT NULL,
+  `movie id` VARCHAR(45) NULL,
+  `user id` VARCHAR(45) NULL,
+  `review text` VARCHAR(45) NULL,
+  `rating` VARCHAR(45) NULL,
+  PRIMARY KEY (`review id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Artist roll`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Artist roll` (
+  `artist id` INT NOT NULL,
+  `movie id` VARCHAR(45) NULL,
+  `roll` VARCHAR(45) NULL,
+  PRIMARY KEY (`artist id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Movie`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Movie` (
+  `Movie id` INT NOT NULL,
+  `title` VARCHAR(45) NULL,
+  `released date` VARCHAR(45) NULL,
+  `Review_review id` INT NOT NULL,
+  `Artist roll_artist id` INT NOT NULL,
+  PRIMARY KEY (`Movie id`),
+  INDEX `fk_Movie_Review1_idx` (`Review_review id` ASC) VISIBLE,
+  INDEX `fk_Movie_Artist roll1_idx` (`Artist roll_artist id` ASC) VISIBLE,
+  CONSTRAINT `fk_Movie_Review1`
+    FOREIGN KEY (`Review_review id`)
+    REFERENCES `mydb`.`Review` (`review id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Movie_Artist roll1`
+    FOREIGN KEY (`Artist roll_artist id`)
+    REFERENCES `mydb`.`Artist roll` (`artist id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Media`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Media` (
+  `media id` INT NOT NULL,
+  `Movie id` VARCHAR(45) NOT NULL,
+  `media type` VARCHAR(45) NULL,
+  `media url` VARCHAR(45) NULL,
+  `Movie_Movie id` INT NOT NULL,
+  PRIMARY KEY (`media id`),
+  INDEX `fk_Media_Movie_idx` (`Movie_Movie id` ASC) VISIBLE,
+  CONSTRAINT `fk_Media_Movie`
+    FOREIGN KEY (`Movie_Movie id`)
+    REFERENCES `mydb`.`Movie` (`Movie id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Genre`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Genre` (
+  `genre id` INT NOT NULL,
+  `genre name` VARCHAR(45) NULL,
+  PRIMARY KEY (`genre id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Movie_Genre`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Movie_Genre` (
+  `movie id` INT NULL,
+  `genre id` VARCHAR(45) NULL,
+  `Movie_Movie id` INT NOT NULL,
+  `Genre_genre id` INT NOT NULL,
+  INDEX `fk_Movie_Genre_Movie1_idx` (`Movie_Movie id` ASC) VISIBLE,
+  PRIMARY KEY (`Genre_genre id`),
+  CONSTRAINT `fk_Movie_Genre_Movie1`
+    FOREIGN KEY (`Movie_Movie id`)
+    REFERENCES `mydb`.`Movie` (`Movie id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Movie_Genre_Genre1`
+    FOREIGN KEY (`Genre_genre id`)
+    REFERENCES `mydb`.`Genre` (`genre id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`User`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`User` (
+  `user id` INT NOT NULL,
+  `user name` VARCHAR(45) NULL,
+  `Review_review id` INT NOT NULL,
+  PRIMARY KEY (`user id`),
+  INDEX `fk_User_Review1_idx` (`Review_review id` ASC) VISIBLE,
+  CONSTRAINT `fk_User_Review1`
+    FOREIGN KEY (`Review_review id`)
+    REFERENCES `mydb`.`Review` (`review id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Artist Skill`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Artist Skill` (
+  `artist id` INT NOT NULL,
+  `skill id` VARCHAR(45) NULL,
+  PRIMARY KEY (`artist id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Artist`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Artist` (
+  `artist id` INT NOT NULL,
+  `artist name` VARCHAR(45) NULL,
+  `Artist Skill_artist id` INT NOT NULL,
+  `Artist roll_artist id` INT NOT NULL,
+  PRIMARY KEY (`artist id`),
+  INDEX `fk_Artist_Artist Skill1_idx` (`Artist Skill_artist id` ASC) VISIBLE,
+  INDEX `fk_Artist_Artist roll1_idx` (`Artist roll_artist id` ASC) VISIBLE,
+  CONSTRAINT `fk_Artist_Artist Skill1`
+    FOREIGN KEY (`Artist Skill_artist id`)
+    REFERENCES `mydb`.`Artist Skill` (`artist id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Artist_Artist roll1`
+    FOREIGN KEY (`Artist roll_artist id`)
+    REFERENCES `mydb`.`Artist roll` (`artist id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`skill`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`skill` (
+  `skill id` INT NOT NULL,
+  `skill name` VARCHAR(45) NULL,
+  `Artist Skill_artist id` INT NOT NULL,
+  PRIMARY KEY (`skill id`),
+  INDEX `fk_skill_Artist Skill1_idx` (`Artist Skill_artist id` ASC) VISIBLE,
+  CONSTRAINT `fk_skill_Artist Skill1`
+    FOREIGN KEY (`Artist Skill_artist id`)
+    REFERENCES `mydb`.`Artist Skill` (`artist id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Placeholder table for view `mydb`.`view1`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`view1` (`id` INT);
+
+-- -----------------------------------------------------
+-- View `mydb`.`view1`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`view1`;
+USE `mydb`;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
